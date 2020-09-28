@@ -14,7 +14,7 @@ class LibraryBarcodeScanner extends StatelessWidget {
       return scanResult;
     } on PlatformException catch(e) {
       if (e.code == BarcodeScanner.cameraAccessDenied) {
-        _showErrorSnackbar(context, )
+      //  _showErrorSnackbar(context, )
       }
     }
   }
