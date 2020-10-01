@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:librarymanagerclient/ui/borrow/borrow.dart';
@@ -31,7 +30,7 @@ class Home extends StatelessWidget {
           child: Text('BORROW'),
           onPressed: (){
             Navigator.of(context).pushNamed(Borrow.routeName);
-          }, // TODO: should use borrow routeName
+          },
         ),
         RaisedButton(
           child: Text('RETURN'),
