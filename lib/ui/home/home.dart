@@ -12,7 +12,7 @@ class Home extends StatelessWidget {
         title: Text('Library Manager'),
       ),
       body: Center(child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           _buildUserMenu(context),
           _buildManagerMenu(context)
@@ -68,7 +68,7 @@ class Home extends StatelessWidget {
         RaisedButton(
           child: Text('DEBUG'),
           onPressed: (){
-//            Navigator.of(context).pushNamed('/debug');
+            Navigator.of(context).pushNamed('/debug');
           },
         ),
       ],

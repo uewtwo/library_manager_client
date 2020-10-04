@@ -3,9 +3,11 @@ import 'package:hooks_riverpod/all.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:state_notifier/state_notifier.dart';
 
-final scanResultProvider = StateNotifierProvider((_) => ScanResultProvider());
+final barcodeResultProvider =
+    StateNotifierProvider.autoDispose((_) => BarcodeResultProvider());
 
-class ScanResultProvider extends StateNotifier<ScanResult> {
-  ScanResultProvider() : super(ScanResult(rawContent: "Scan result here."));
+class BarcodeResultProvider extends StateNotifier<ScanResult> {
+  BarcodeResultProvider() : super(ScanResult(rawContent: 'Scan result here.'));
+
   void exportResult(scanResult) => state = scanResult;
 }
