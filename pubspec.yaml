@@ -44,7 +44,6 @@ dependencies:
   state_notifier: ^0.6.0
   barcode_scan: ^3.0.1
 
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
