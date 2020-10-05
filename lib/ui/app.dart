@@ -1,9 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/all.dart';
 import 'package:librarymanagerclient/ui/borrow/borrow.dart';
-import 'package:librarymanagerclient/ui/borrow/debug.dart';
 import 'package:librarymanagerclient/ui/home/home.dart';
 
 class LibraryManagerApp extends HookWidget {
@@ -15,7 +13,6 @@ class LibraryManagerApp extends HookWidget {
       routes: <String, WidgetBuilder> {
         Home.routeName: (BuildContext context) => Home(),
         Borrow.routeName: (BuildContext context) => Borrow(),
-        Debug.routeName: (BuildContext context) => Debug(),
       },
 //      home: Home() // Define routes: Home.routeName,
       theme: ThemeData(

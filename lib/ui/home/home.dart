@@ -68,7 +68,7 @@ class Home extends StatelessWidget {
         RaisedButton(
           child: Text('DEBUG'),
           onPressed: (){
-            Navigator.of(context).pushNamed('/debug');
+//            Navigator.of(context).pushNamed('/debug');
           },
         ),
       ],

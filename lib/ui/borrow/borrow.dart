@@ -3,10 +3,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/all.dart';
-import 'package:librarymanagerclient/providers//pick_date_provider.dart';
-import 'package:librarymanagerclient/providers//barcode_result_provider.dart';
+import 'package:librarymanagerclient/repositories/pick_date_provider.dart';
+import 'package:librarymanagerclient/repositories/barcode_result_repository.dart';
 import 'package:librarymanagerclient/widgets/date_picker_widget.dart';
 import 'package:librarymanagerclient/widgets/barcode_scanner_widget.dart';
+
+final barcodeResultProvider =
+    StateNotifierProvider.autoDispose((ref) => BarcodeResultRepository());
 
 class Borrow extends HookWidget {
   static const routeName = '/borrow';
@@ -34,7 +37,7 @@ class Borrow extends HookWidget {
 
   Widget _buildBarcodeScanning() {
     final ScanResult stateScanner = useProvider(barcodeResultProvider.state);
-    final BarcodeResultProvider exporter = useProvider(barcodeResultProvider);
+    final exporter = useProvider(barcodeResultProvider);
 
     return Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
