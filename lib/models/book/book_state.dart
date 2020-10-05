@@ -7,7 +7,7 @@ part 'book_state.g.dart';
 @freezed
 abstract class BookState with _$BookState {
   const factory BookState({
-    Book book,
+    String uid,
     String holderName,
     String holderId,
     DateTime from,

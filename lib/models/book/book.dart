@@ -6,6 +6,7 @@ part 'book.g.dart';
 @freezed
 abstract class Book with _$Book {
   const factory Book({
+    String uid,
     String title,
     int janCode,
     int seq,

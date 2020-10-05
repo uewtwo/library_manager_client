@@ -16,8 +16,9 @@ class _$BookTearOff {
   const _$BookTearOff();
 
 // ignore: unused_element
-  _Book call({String title, int janCode, int seq}) {
+  _Book call({String uid, String title, int janCode, int seq}) {
     return _Book(
+      uid: uid,
       title: title,
       janCode: janCode,
       seq: seq,
@@ -29,6 +30,7 @@ class _$BookTearOff {
 const $Book = _$BookTearOff();
 
 mixin _$Book {
+  String get uid;
   String get title;
   int get janCode;
   int get seq;
@@ -40,7 +42,7 @@ mixin _$Book {
 abstract class $BookCopyWith<$Res> {
   factory $BookCopyWith(Book value, $Res Function(Book) then) =
       _$BookCopyWithImpl<$Res>;
-  $Res call({String title, int janCode, int seq});
+  $Res call({String uid, String title, int janCode, int seq});
 }
 
 class _$BookCopyWithImpl<$Res> implements $BookCopyWith<$Res> {
@@ -52,11 +54,13 @@ class _$BookCopyWithImpl<$Res> implements $BookCopyWith<$Res> {
 
   @override
   $Res call({
+    Object uid = freezed,
     Object title = freezed,
     Object janCode = freezed,
     Object seq = freezed,
   }) {
     return _then(_value.copyWith(
+      uid: uid == freezed ? _value.uid : uid as String,
       title: title == freezed ? _value.title : title as String,
       janCode: janCode == freezed ? _value.janCode : janCode as int,
       seq: seq == freezed ? _value.seq : seq as int,
@@ -68,7 +72,7 @@ abstract class _$BookCopyWith<$Res> implements $BookCopyWith<$Res> {
   factory _$BookCopyWith(_Book value, $Res Function(_Book) then) =
       __$BookCopyWithImpl<$Res>;
   @override
-  $Res call({String title, int janCode, int seq});
+  $Res call({String uid, String title, int janCode, int seq});
 }
 
 class __$BookCopyWithImpl<$Res> extends _$BookCopyWithImpl<$Res>
@@ -81,11 +85,13 @@ class __$BookCopyWithImpl<$Res> extends _$BookCopyWithImpl<$Res>
 
   @override
   $Res call({
+    Object uid = freezed,
     Object title = freezed,
     Object janCode = freezed,
     Object seq = freezed,
   }) {
     return _then(_Book(
+      uid: uid == freezed ? _value.uid : uid as String,
       title: title == freezed ? _value.title : title as String,
       janCode: janCode == freezed ? _value.janCode : janCode as int,
       seq: seq == freezed ? _value.seq : seq as int,
@@ -95,11 +101,13 @@ class __$BookCopyWithImpl<$Res> extends _$BookCopyWithImpl<$Res>
 
 @JsonSerializable()
 class _$_Book implements _Book {
-  const _$_Book({this.title, this.janCode, this.seq});
+  const _$_Book({this.uid, this.title, this.janCode, this.seq});
 
   factory _$_Book.fromJson(Map<String, dynamic> json) =>
       _$_$_BookFromJson(json);
 
+  @override
+  final String uid;
   @override
   final String title;
   @override
@@ -109,13 +117,15 @@ class _$_Book implements _Book {
 
   @override
   String toString() {
-    return 'Book(title: $title, janCode: $janCode, seq: $seq)';
+    return 'Book(uid: $uid, title: $title, janCode: $janCode, seq: $seq)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other is _Book &&
+            (identical(other.uid, uid) ||
+                const DeepCollectionEquality().equals(other.uid, uid)) &&
             (identical(other.title, title) ||
                 const DeepCollectionEquality().equals(other.title, title)) &&
             (identical(other.janCode, janCode) ||
@@ -128,6 +138,7 @@ class _$_Book implements _Book {
   @override
   int get hashCode =>
       runtimeType.hashCode ^
+      const DeepCollectionEquality().hash(uid) ^
       const DeepCollectionEquality().hash(title) ^
       const DeepCollectionEquality().hash(janCode) ^
       const DeepCollectionEquality().hash(seq);
@@ -143,10 +154,13 @@ class _$_Book implements _Book {
 }
 
 abstract class _Book implements Book {
-  const factory _Book({String title, int janCode, int seq}) = _$_Book;
+  const factory _Book({String uid, String title, int janCode, int seq}) =
+      _$_Book;
 
   factory _Book.fromJson(Map<String, dynamic> json) = _$_Book.fromJson;
 
+  @override
+  String get uid;
   @override
   String get title;
   @override

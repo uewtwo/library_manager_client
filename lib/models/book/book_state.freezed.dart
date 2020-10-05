@@ -17,13 +17,13 @@ class _$BookStateTearOff {
 
 // ignore: unused_element
   _BookState call(
-      {Book book,
+      {String uid,
       String holderName,
       String holderId,
       DateTime from,
       DateTime to}) {
     return _BookState(
-      book: book,
+      uid: uid,
       holderName: holderName,
       holderId: holderId,
       from: from,
@@ -36,7 +36,7 @@ class _$BookStateTearOff {
 const $BookState = _$BookStateTearOff();
 
 mixin _$BookState {
-  Book get book;
+  String get uid;
   String get holderName;
   String get holderId;
   DateTime get from;
@@ -50,13 +50,11 @@ abstract class $BookStateCopyWith<$Res> {
   factory $BookStateCopyWith(BookState value, $Res Function(BookState) then) =
       _$BookStateCopyWithImpl<$Res>;
   $Res call(
-      {Book book,
+      {String uid,
       String holderName,
       String holderId,
       DateTime from,
       DateTime to});
-
-  $BookCopyWith<$Res> get book;
 }
 
 class _$BookStateCopyWithImpl<$Res> implements $BookStateCopyWith<$Res> {
@@ -68,30 +66,20 @@ class _$BookStateCopyWithImpl<$Res> implements $BookStateCopyWith<$Res> {
 
   @override
   $Res call({
-    Object book = freezed,
+    Object uid = freezed,
     Object holderName = freezed,
     Object holderId = freezed,
     Object from = freezed,
     Object to = freezed,
   }) {
     return _then(_value.copyWith(
-      book: book == freezed ? _value.book : book as Book,
+      uid: uid == freezed ? _value.uid : uid as String,
       holderName:
           holderName == freezed ? _value.holderName : holderName as String,
       holderId: holderId == freezed ? _value.holderId : holderId as String,
       from: from == freezed ? _value.from : from as DateTime,
       to: to == freezed ? _value.to : to as DateTime,
     ));
-  }
-
-  @override
-  $BookCopyWith<$Res> get book {
-    if (_value.book == null) {
-      return null;
-    }
-    return $BookCopyWith<$Res>(_value.book, (value) {
-      return _then(_value.copyWith(book: value));
-    });
   }
 }
 
@@ -101,14 +89,11 @@ abstract class _$BookStateCopyWith<$Res> implements $BookStateCopyWith<$Res> {
       __$BookStateCopyWithImpl<$Res>;
   @override
   $Res call(
-      {Book book,
+      {String uid,
       String holderName,
       String holderId,
       DateTime from,
       DateTime to});
-
-  @override
-  $BookCopyWith<$Res> get book;
 }
 
 class __$BookStateCopyWithImpl<$Res> extends _$BookStateCopyWithImpl<$Res>
@@ -121,14 +106,14 @@ class __$BookStateCopyWithImpl<$Res> extends _$BookStateCopyWithImpl<$Res>
 
   @override
   $Res call({
-    Object book = freezed,
+    Object uid = freezed,
     Object holderName = freezed,
     Object holderId = freezed,
     Object from = freezed,
     Object to = freezed,
   }) {
     return _then(_BookState(
-      book: book == freezed ? _value.book : book as Book,
+      uid: uid == freezed ? _value.uid : uid as String,
       holderName:
           holderName == freezed ? _value.holderName : holderName as String,
       holderId: holderId == freezed ? _value.holderId : holderId as String,
@@ -141,13 +126,13 @@ class __$BookStateCopyWithImpl<$Res> extends _$BookStateCopyWithImpl<$Res>
 @JsonSerializable()
 class _$_BookState implements _BookState {
   const _$_BookState(
-      {this.book, this.holderName, this.holderId, this.from, this.to});
+      {this.uid, this.holderName, this.holderId, this.from, this.to});
 
   factory _$_BookState.fromJson(Map<String, dynamic> json) =>
       _$_$_BookStateFromJson(json);
 
   @override
-  final Book book;
+  final String uid;
   @override
   final String holderName;
   @override
@@ -159,15 +144,15 @@ class _$_BookState implements _BookState {
 
   @override
   String toString() {
-    return 'BookState(book: $book, holderName: $holderName, holderId: $holderId, from: $from, to: $to)';
+    return 'BookState(uid: $uid, holderName: $holderName, holderId: $holderId, from: $from, to: $to)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other is _BookState &&
-            (identical(other.book, book) ||
-                const DeepCollectionEquality().equals(other.book, book)) &&
+            (identical(other.uid, uid) ||
+                const DeepCollectionEquality().equals(other.uid, uid)) &&
             (identical(other.holderName, holderName) ||
                 const DeepCollectionEquality()
                     .equals(other.holderName, holderName)) &&
@@ -183,7 +168,7 @@ class _$_BookState implements _BookState {
   @override
   int get hashCode =>
       runtimeType.hashCode ^
-      const DeepCollectionEquality().hash(book) ^
+      const DeepCollectionEquality().hash(uid) ^
       const DeepCollectionEquality().hash(holderName) ^
       const DeepCollectionEquality().hash(holderId) ^
       const DeepCollectionEquality().hash(from) ^
@@ -201,7 +186,7 @@ class _$_BookState implements _BookState {
 
 abstract class _BookState implements BookState {
   const factory _BookState(
-      {Book book,
+      {String uid,
       String holderName,
       String holderId,
       DateTime from,
@@ -211,7 +196,7 @@ abstract class _BookState implements BookState {
       _$_BookState.fromJson;
 
   @override
-  Book get book;
+  String get uid;
   @override
   String get holderName;
   @override

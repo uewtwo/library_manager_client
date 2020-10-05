@@ -8,9 +8,7 @@ part of 'book_state.dart';
 
 _$_BookState _$_$_BookStateFromJson(Map<String, dynamic> json) {
   return _$_BookState(
-    book: json['book'] == null
-        ? null
-        : Book.fromJson(json['book'] as Map<String, dynamic>),
+    uid: json['uid'] as String,
     holderName: json['holderName'] as String,
     holderId: json['holderId'] as String,
     from: json['from'] == null ? null : DateTime.parse(json['from'] as String),
@@ -20,7 +18,7 @@ _$_BookState _$_$_BookStateFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$_$_BookStateToJson(_$_BookState instance) =>
     <String, dynamic>{
-      'book': instance.book,
+      'uid': instance.uid,
       'holderName': instance.holderName,
       'holderId': instance.holderId,
       'from': instance.from?.toIso8601String(),
