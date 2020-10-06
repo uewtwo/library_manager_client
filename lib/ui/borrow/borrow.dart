@@ -10,6 +10,8 @@ import 'package:librarymanagerclient/widgets/barcode_scanner_widget.dart';
 
 final barcodeResultProvider =
     StateNotifierProvider.autoDispose((ref) => BarcodeResultRepository());
+final pickDateProvider =
+    StateNotifierProvider.autoDispose((_) => PickDateProvider());
 
 class Borrow extends HookWidget {
   static const routeName = '/borrow';
