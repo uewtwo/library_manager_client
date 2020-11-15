@@ -45,6 +45,9 @@ dependencies:
   barcode_scan: ^3.0.1
   sqflite: any
   path: any
+  xml: ^4.5.1
+  xml2json: ^4.4.0
+  flutter_nfc_reader: ^0.1.0
 
 dev_dependencies:
   flutter_test:
