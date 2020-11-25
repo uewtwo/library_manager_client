@@ -1,16 +1,16 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-abstract class DatabaseProvider {
-  Database _instance;
+abstract class DBProvider {
+  Database _db;
 
   String get databaseName;
 
   String get tableName;
 
   Future<Database> get database async {
-    if (_instance == null) {
-      _instance = await openDatabase(
+    if (_db == null) {
+      _db = await openDatabase(
         join(
           await getDatabasesPath(),
           databaseName,
@@ -19,9 +19,9 @@ abstract class DatabaseProvider {
         version: 1,
       );
     }
-    return _instance;
+    return _db;
   }
 
-  /// DBがpathに存在しなかった場合に onCreateメソッドが呼ばれます。（https://iganin.hatenablog.com/entry/2019/01/09/010804 より）
+  // DBがpathに存在しない場合に onCreate で呼ばれる.
   createDatabase(Database db, int version);
 }
