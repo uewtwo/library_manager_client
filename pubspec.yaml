@@ -45,6 +45,7 @@ dependencies:
   barcode_scan: ^3.0.1
   sqflite: any
   path: any
+  nfc_manager: ^2.0.2
 
 dev_dependencies:
   flutter_test:
