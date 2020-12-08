@@ -21,16 +21,17 @@ final pickDateProvider =
 
 class Borrow extends HookWidget {
   static const routeName = '/borrow';
+
   Borrow({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Library Manager'),
-        ),
-        body: Center(
-            child: Column(
+      appBar: AppBar(
+        title: Text('Library Manager'),
+      ),
+      body: Center(
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             _buildBarcodeScanning(),
@@ -38,7 +39,9 @@ class Borrow extends HookWidget {
             _buildReturnDate(),
             _buildConfirm(),
           ],
-        )));
+        ),
+      ),
+    );
   }
 
   Widget _buildBarcodeScanning() {
@@ -81,14 +84,17 @@ class Borrow extends HookWidget {
       // iOSのとき
       reader.readTest(exporter);
     }
-    return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-      FlatButton(
-        color: Colors.teal,
-        child: Text('NFC SCAN', style: TextStyle(color: Colors.white)),
-        onPressed: () {},
-      ),
-      stateReader == '' ? CircularProgressIndicator() : Text(stateReader)
-    ]);
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        FlatButton(
+          color: Colors.teal,
+          child: Text('NFC SCAN', style: TextStyle(color: Colors.white)),
+          onPressed: () {},
+        ),
+        stateReader == '' ? CircularProgressIndicator() : Text(stateReader)
+      ],
+    );
   }
 
   Widget _buildReturnDate() {
@@ -115,8 +121,8 @@ class Borrow extends HookWidget {
   Widget _buildConfirm() {
     return Container(
       child: RaisedButton(
-          onPressed:
-              () {}, // TODO: Implement function: Validation and Confirm to borrow books.
+          onPressed: () {},
+          // TODO: Implement function: Validation and Confirm to borrow books.
           child: Text('BORROW!')),
     );
   }
