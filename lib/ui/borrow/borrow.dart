@@ -49,11 +49,12 @@ class Borrow extends HookWidget {
     final exporter = useProvider(barcodeResultProvider);
 
     return Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          _buildScanner(exporter),
-          Text(stateScanner.rawContent),
-        ]);
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: <Widget>[
+        _buildScanner(exporter),
+        Text(stateScanner.rawContent),
+      ],
+    );
   }
 
   Widget _buildScanner(exporter) {
@@ -61,7 +62,9 @@ class Borrow extends HookWidget {
       color: Colors.teal,
       child: Text('BARCODE SCAN', style: TextStyle(color: Colors.white)),
       onPressed: () async {
-        exporter.exportResult(await BarcodeScannerWidget().scan());
+        exporter.exportResult(
+          await BarcodeScannerWidget().scan(),
+        );
       },
     );
   }
@@ -70,13 +73,8 @@ class Borrow extends HookWidget {
     final String stateReader = useProvider(nfcResultProvider.state);
     final exporter = useProvider(nfcResultProvider);
 
-    // void _tagRead() {
-    //   NfcManager.instance.startSession(onDiscovered: (NfcTag tag) async {
-    //     exporter.exportResult(tag.data.toString());
-    //     NfcManager.instance.stopSession();
-    //   });
-    // }
     final reader = NfcReaderWidget();
+
     if (Platform.isAndroid) {
       // Android のとき
       reader.read(exporter);
@@ -107,13 +105,14 @@ class Borrow extends HookWidget {
       children: [
         Text('Return Date: '),
         RaisedButton(
-            onPressed: () async {
-              exporter.exportResult(await DatePickerWidget(
-                      initialDate: statePicker, firstDate: DateTime.now())
-                  .pickDate(context));
-            },
-            child: Text(
-                '${statePicker.year}/${statePicker.month}/${statePicker.day}'))
+          onPressed: () async {
+            exporter.exportResult(await DatePickerWidget(
+                    initialDate: statePicker, firstDate: DateTime.now())
+                .pickDate(context));
+          },
+          child: Text(
+              '${statePicker.year}/${statePicker.month}/${statePicker.day}'),
+        )
       ],
     );
   }
@@ -121,9 +120,10 @@ class Borrow extends HookWidget {
   Widget _buildConfirm() {
     return Container(
       child: RaisedButton(
-          onPressed: () {},
-          // TODO: Implement function: Validation and Confirm to borrow books.
-          child: Text('BORROW!')),
+        onPressed: () {},
+        // TODO: Implement function: Validation and Confirm to borrow books.
+        child: Text('BORROW!'),
+      ),
     );
   }
 }
