@@ -21,7 +21,6 @@ class Borrow extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    saveTest();
     return Scaffold(
         appBar: AppBar(
           title: Text('Library Manager'),
@@ -99,22 +98,5 @@ class Borrow extends HookWidget {
         child: Text('BORROW!')
       ),
     );
-  }
-
-  // test
-  void saveTest() async {
-    final Book book = Book(
-        isbn: "4863542941",
-        seq: 1,
-        title: "基礎から学ぶ Flutter",
-        createdAt: DateTime.now().toString(),
-        updatedAt: DateTime.now().toString()
-    );
-
-    print("####################");
-    print(book.toJson());
-    print("####################");
-    print(await BookTableProvider().registerBook(book));
-    print("finished");
   }
 }
