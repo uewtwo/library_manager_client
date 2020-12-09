@@ -8,16 +8,20 @@ part of 'book.dart';
 
 _$_Book _$_$_BookFromJson(Map<String, dynamic> json) {
   return _$_Book(
-    uid: json['uid'] as String,
-    title: json['title'] as String,
-    janCode: json['janCode'] as int,
+    id: json['id'] as int,
+    isbn: json['isbn'] as String,
     seq: json['seq'] as int,
+    title: json['title'] as String,
+    createdAt: json['createdAt'] as String,
+    updatedAt: json['updatedAt'] as String,
   );
 }
 
 Map<String, dynamic> _$_$_BookToJson(_$_Book instance) => <String, dynamic>{
-      'uid': instance.uid,
-      'title': instance.title,
-      'janCode': instance.janCode,
+      'id': instance.id,
+      'isbn': instance.isbn,
       'seq': instance.seq,
+      'title': instance.title,
+      'createdAt': instance.createdAt,
+      'updatedAt': instance.updatedAt,
     };

@@ -8,19 +8,25 @@ part of 'book_state.dart';
 
 _$_BookState _$_$_BookStateFromJson(Map<String, dynamic> json) {
   return _$_BookState(
-    uid: json['uid'] as String,
-    holderName: json['holderName'] as String,
+    isbn: json['isbn'] as String,
+    seq: json['seq'] as int,
+    returned: json['returned'] as int,
     holderId: json['holderId'] as String,
-    from: json['from'] == null ? null : DateTime.parse(json['from'] as String),
-    to: json['to'] == null ? null : DateTime.parse(json['to'] as String),
+    borrowFrom: json['borrowFrom'] as String,
+    borrowTo: json['borrowTo'] as String,
+    createdAt: json['createdAt'] as String,
+    updatedAt: json['updatedAt'] as String,
   );
 }
 
 Map<String, dynamic> _$_$_BookStateToJson(_$_BookState instance) =>
     <String, dynamic>{
-      'uid': instance.uid,
-      'holderName': instance.holderName,
+      'isbn': instance.isbn,
+      'seq': instance.seq,
+      'returned': instance.returned,
       'holderId': instance.holderId,
-      'from': instance.from?.toIso8601String(),
-      'to': instance.to?.toIso8601String(),
+      'borrowFrom': instance.borrowFrom,
+      'borrowTo': instance.borrowTo,
+      'createdAt': instance.createdAt,
+      'updatedAt': instance.updatedAt,
     };
