@@ -8,20 +8,29 @@ abstract class DBProvider {
 
   String get tableName;
 
-  Future<Database> get database async {
+  int get version;
+
+  Future<Database> get table async {
     if (_db == null) {
       _db = await openDatabase(
         join(
           await getDatabasesPath(),
           databaseName,
         ),
-        onCreate: createDatabase,
-        version: 1,
+        onCreate: createTable,
+        version: version,
       );
     }
+    final List<Map<String, dynamic>> res = await _db.rawQuery("""
+      SELECT name FROM sqlite_master WHERE type = 'table' AND name = '$tableName';
+    """);
+    if (res.length == 0) {
+      createTable(_db, version);
+    }
+
     return _db;
   }
 
-  // DBがpathに存在しない場合に onCreate で呼ばれる.
-  createDatabase(Database db, int version);
+  // Tableがpathに存在しない場合に onCreate で呼ばれる.
+  createTable(Database db, int version);
 }

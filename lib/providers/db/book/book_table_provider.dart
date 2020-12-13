@@ -11,20 +11,23 @@ class BookTableProvider extends DBProvider {
   String get tableName => 'books';
 
   @override
-  createDatabase(Database db, int version) => db.execute("""
+  int get version => 1;
+
+  @override
+  createTable(Database db, int version) => db.execute("""
       CREATE TABLE $tableName(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        isbn STRING,
-        seq INTEGER,
-        title STRING,
+        isbn STRING NOT NULL,
+        seq INTEGER NOT NULL,
+        title STRING NOT NULL,
         createdAt TEXT NOT NULL,
         updatedAt TEXT NOT NULL,
         UNIQUE(isbn, seq)
       );
-    """);
+      """);
 
   Future<Book> getBook(String isbn) async {
-    final db = await database;
+    final db = await table;
     final List<Map<String, dynamic>> res = (await db.query(
       tableName,
       where: "isbn=?",
@@ -39,7 +42,7 @@ class BookTableProvider extends DBProvider {
   }
 
   Future<List<Book>> getBooks() async {
-    final db = await database;
+    final db = await table;
     List<Book> books = List<Book>();
     (await db.query(tableName))
         .where((element) => element != null)
@@ -62,21 +65,27 @@ class BookTableProvider extends DBProvider {
   }
 
   Future<int> saveBook(Book book) async {
-    final db = await database;
+    final db = await table;
     return await db.insert(tableName, book.toJson());
   }
 
   Future<int> saveBookByIsbn(String isbn) async {
     // FIXME: 国立国会図書館から本のタイトルを取得する
     final String title = "hogehoge";
+    final String now = DateTime.now().toString();
     final Book book = Book(
       isbn: isbn,
       seq: (await getNumberOfBooks(isbn)) + 1,
       title: title,
-      createdAt: DateTime.now().toString(),
-      updatedAt: DateTime.now().toString(),
+      createdAt: now,
+      updatedAt: now,
     );
 
     return saveBook(book);
+  }
+
+  Future<List<Map<String, dynamic>>> rawQuery(String sql) async {
+    final db = await table;
+    return await db.rawQuery(sql);
   }
 }

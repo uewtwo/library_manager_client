@@ -19,16 +19,16 @@ class _$BookStateTearOff {
   _BookState call(
       {@required String isbn,
       @required int seq,
-      @required int returned,
-      @required String holderId,
-      @required String borrowFrom,
-      @required String borrowTo,
+      @required int isBorrowed,
+      @required @nullable String holderId,
+      @required @nullable String borrowFrom,
+      @required @nullable String borrowTo,
       @required String createdAt,
       @required String updatedAt}) {
     return _BookState(
       isbn: isbn,
       seq: seq,
-      returned: returned,
+      isBorrowed: isBorrowed,
       holderId: holderId,
       borrowFrom: borrowFrom,
       borrowTo: borrowTo,
@@ -44,9 +44,12 @@ const $BookState = _$BookStateTearOff();
 mixin _$BookState {
   String get isbn;
   int get seq;
-  int get returned;
+  int get isBorrowed;
+  @nullable
   String get holderId;
+  @nullable
   String get borrowFrom;
+  @nullable
   String get borrowTo;
   String get createdAt;
   String get updatedAt;
@@ -61,10 +64,10 @@ abstract class $BookStateCopyWith<$Res> {
   $Res call(
       {String isbn,
       int seq,
-      int returned,
-      String holderId,
-      String borrowFrom,
-      String borrowTo,
+      int isBorrowed,
+      @nullable String holderId,
+      @nullable String borrowFrom,
+      @nullable String borrowTo,
       String createdAt,
       String updatedAt});
 }
@@ -80,7 +83,7 @@ class _$BookStateCopyWithImpl<$Res> implements $BookStateCopyWith<$Res> {
   $Res call({
     Object isbn = freezed,
     Object seq = freezed,
-    Object returned = freezed,
+    Object isBorrowed = freezed,
     Object holderId = freezed,
     Object borrowFrom = freezed,
     Object borrowTo = freezed,
@@ -90,7 +93,7 @@ class _$BookStateCopyWithImpl<$Res> implements $BookStateCopyWith<$Res> {
     return _then(_value.copyWith(
       isbn: isbn == freezed ? _value.isbn : isbn as String,
       seq: seq == freezed ? _value.seq : seq as int,
-      returned: returned == freezed ? _value.returned : returned as int,
+      isBorrowed: isBorrowed == freezed ? _value.isBorrowed : isBorrowed as int,
       holderId: holderId == freezed ? _value.holderId : holderId as String,
       borrowFrom:
           borrowFrom == freezed ? _value.borrowFrom : borrowFrom as String,
@@ -109,10 +112,10 @@ abstract class _$BookStateCopyWith<$Res> implements $BookStateCopyWith<$Res> {
   $Res call(
       {String isbn,
       int seq,
-      int returned,
-      String holderId,
-      String borrowFrom,
-      String borrowTo,
+      int isBorrowed,
+      @nullable String holderId,
+      @nullable String borrowFrom,
+      @nullable String borrowTo,
       String createdAt,
       String updatedAt});
 }
@@ -129,7 +132,7 @@ class __$BookStateCopyWithImpl<$Res> extends _$BookStateCopyWithImpl<$Res>
   $Res call({
     Object isbn = freezed,
     Object seq = freezed,
-    Object returned = freezed,
+    Object isBorrowed = freezed,
     Object holderId = freezed,
     Object borrowFrom = freezed,
     Object borrowTo = freezed,
@@ -139,7 +142,7 @@ class __$BookStateCopyWithImpl<$Res> extends _$BookStateCopyWithImpl<$Res>
     return _then(_BookState(
       isbn: isbn == freezed ? _value.isbn : isbn as String,
       seq: seq == freezed ? _value.seq : seq as int,
-      returned: returned == freezed ? _value.returned : returned as int,
+      isBorrowed: isBorrowed == freezed ? _value.isBorrowed : isBorrowed as int,
       holderId: holderId == freezed ? _value.holderId : holderId as String,
       borrowFrom:
           borrowFrom == freezed ? _value.borrowFrom : borrowFrom as String,
@@ -155,18 +158,15 @@ class _$_BookState implements _BookState {
   const _$_BookState(
       {@required this.isbn,
       @required this.seq,
-      @required this.returned,
-      @required this.holderId,
-      @required this.borrowFrom,
-      @required this.borrowTo,
+      @required this.isBorrowed,
+      @required @nullable this.holderId,
+      @required @nullable this.borrowFrom,
+      @required @nullable this.borrowTo,
       @required this.createdAt,
       @required this.updatedAt})
       : assert(isbn != null),
         assert(seq != null),
-        assert(returned != null),
-        assert(holderId != null),
-        assert(borrowFrom != null),
-        assert(borrowTo != null),
+        assert(isBorrowed != null),
         assert(createdAt != null),
         assert(updatedAt != null);
 
@@ -178,12 +178,15 @@ class _$_BookState implements _BookState {
   @override
   final int seq;
   @override
-  final int returned;
+  final int isBorrowed;
   @override
+  @nullable
   final String holderId;
   @override
+  @nullable
   final String borrowFrom;
   @override
+  @nullable
   final String borrowTo;
   @override
   final String createdAt;
@@ -192,7 +195,7 @@ class _$_BookState implements _BookState {
 
   @override
   String toString() {
-    return 'BookState(isbn: $isbn, seq: $seq, returned: $returned, holderId: $holderId, borrowFrom: $borrowFrom, borrowTo: $borrowTo, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'BookState(isbn: $isbn, seq: $seq, isBorrowed: $isBorrowed, holderId: $holderId, borrowFrom: $borrowFrom, borrowTo: $borrowTo, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -203,9 +206,9 @@ class _$_BookState implements _BookState {
                 const DeepCollectionEquality().equals(other.isbn, isbn)) &&
             (identical(other.seq, seq) ||
                 const DeepCollectionEquality().equals(other.seq, seq)) &&
-            (identical(other.returned, returned) ||
+            (identical(other.isBorrowed, isBorrowed) ||
                 const DeepCollectionEquality()
-                    .equals(other.returned, returned)) &&
+                    .equals(other.isBorrowed, isBorrowed)) &&
             (identical(other.holderId, holderId) ||
                 const DeepCollectionEquality()
                     .equals(other.holderId, holderId)) &&
@@ -228,7 +231,7 @@ class _$_BookState implements _BookState {
       runtimeType.hashCode ^
       const DeepCollectionEquality().hash(isbn) ^
       const DeepCollectionEquality().hash(seq) ^
-      const DeepCollectionEquality().hash(returned) ^
+      const DeepCollectionEquality().hash(isBorrowed) ^
       const DeepCollectionEquality().hash(holderId) ^
       const DeepCollectionEquality().hash(borrowFrom) ^
       const DeepCollectionEquality().hash(borrowTo) ^
@@ -249,10 +252,10 @@ abstract class _BookState implements BookState {
   const factory _BookState(
       {@required String isbn,
       @required int seq,
-      @required int returned,
-      @required String holderId,
-      @required String borrowFrom,
-      @required String borrowTo,
+      @required int isBorrowed,
+      @required @nullable String holderId,
+      @required @nullable String borrowFrom,
+      @required @nullable String borrowTo,
       @required String createdAt,
       @required String updatedAt}) = _$_BookState;
 
@@ -264,12 +267,15 @@ abstract class _BookState implements BookState {
   @override
   int get seq;
   @override
-  int get returned;
+  int get isBorrowed;
   @override
+  @nullable
   String get holderId;
   @override
+  @nullable
   String get borrowFrom;
   @override
+  @nullable
   String get borrowTo;
   @override
   String get createdAt;
