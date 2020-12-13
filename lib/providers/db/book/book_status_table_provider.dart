@@ -3,12 +3,12 @@ import 'package:librarymanagerclient/models/book/book.dart';
 import 'package:librarymanagerclient/providers/db/db_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
-class BookTableProvider extends DBProvider {
+class BookStatusTableProvider extends DBProvider {
   @override
   String get databaseName => 'book_db.sqlite';
 
   @override
-  String get tableName => 'books';
+  String get tableName => 'book_status';
 
   @override
   createDatabase(Database db, int version) => db.execute("""
@@ -16,7 +16,6 @@ class BookTableProvider extends DBProvider {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         isbn STRING,
         seq INTEGER,
-        title STRING,
         createdAt TEXT NOT NULL,
         updatedAt TEXT NOT NULL,
         UNIQUE(isbn, seq)
@@ -33,20 +32,14 @@ class BookTableProvider extends DBProvider {
     if (res.length == 0) {
       throw BookNotFoundException();
     }
-    var book = {...res[0]};
-    book["isbn"] = book["isbn"].toString();
-    return Book.fromJson(book);
+    return Book.fromJson(res[0]);
   }
 
   Future<List<Book>> getBooks() async {
     final db = await database;
-    List<Book> books = List<Book>();
-    (await db.query(tableName))
-        .where((element) => element != null)
-        .forEach((element) {
-      var book = {...element};
-      book["isbn"] = element["isbn"].toString();
-      books.add(Book.fromJson(book));
+    List<Book> books;
+    (await db.query(tableName)).forEach((element) {
+      books.add(Book.fromJson(element));
     });
 
     return books;
