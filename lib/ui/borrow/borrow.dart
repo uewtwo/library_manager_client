@@ -5,8 +5,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/all.dart';
-import 'package:librarymanagerclient/models/book/book.dart';
-import 'package:librarymanagerclient/providers/db/book/book_table_provider.dart';
 import 'package:librarymanagerclient/repositories/barcode_result_repository.dart';
 import 'package:librarymanagerclient/repositories/nfc_result_repository.dart';
 import 'package:librarymanagerclient/repositories/pick_date_provider.dart';
@@ -108,12 +106,16 @@ class Borrow extends HookWidget {
         Text('Return Date: '),
         RaisedButton(
           onPressed: () async {
-            exporter.exportResult(await DatePickerWidget(
-                    initialDate: statePicker, firstDate: DateTime.now())
-                .pickDate(context));
+            exporter.exportResult(
+              await DatePickerWidget(
+                initialDate: statePicker,
+                firstDate: DateTime.now(),
+              ).pickDate(context),
+            );
           },
           child: Text(
-              '${statePicker.year}/${statePicker.month}/${statePicker.day}'),
+            '${statePicker.year}/${statePicker.month}/${statePicker.day}',
+          ),
         )
       ],
     );

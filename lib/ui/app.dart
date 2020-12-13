@@ -6,11 +6,12 @@ import 'package:librarymanagerclient/ui/home/home.dart';
 
 class LibraryManagerApp extends HookWidget {
   const LibraryManagerApp({Key key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "Library Manager",
-      routes: <String, WidgetBuilder> {
+      routes: <String, WidgetBuilder>{
         Home.routeName: (BuildContext context) => Home(),
         Borrow.routeName: (BuildContext context) => Borrow(),
       },
@@ -23,5 +24,4 @@ class LibraryManagerApp extends HookWidget {
       ),
     );
   }
-
 }
