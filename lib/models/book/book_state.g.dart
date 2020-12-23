@@ -10,7 +10,7 @@ _$_BookState _$_$_BookStateFromJson(Map<String, dynamic> json) {
   return _$_BookState(
     isbn: json['isbn'] as String,
     seq: json['seq'] as int,
-    returned: json['returned'] as int,
+    isBorrowed: json['isBorrowed'] as int,
     holderId: json['holderId'] as String,
     borrowFrom: json['borrowFrom'] as String,
     borrowTo: json['borrowTo'] as String,
@@ -23,7 +23,7 @@ Map<String, dynamic> _$_$_BookStateToJson(_$_BookState instance) =>
     <String, dynamic>{
       'isbn': instance.isbn,
       'seq': instance.seq,
-      'returned': instance.returned,
+      'isBorrowed': instance.isBorrowed,
       'holderId': instance.holderId,
       'borrowFrom': instance.borrowFrom,
       'borrowTo': instance.borrowTo,

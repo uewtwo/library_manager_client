@@ -1,0 +1,1 @@
+class BookBaseException implements Exception {}
