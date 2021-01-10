@@ -10,6 +10,7 @@ abstract class User with _$User {
     int id,
     @required String identifier,
     @required String name,
+    @required int permission,
     @required String createdAt,
     @required String updatedAt,
   }) = _User;

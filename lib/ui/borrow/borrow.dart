@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -23,18 +21,6 @@ final userNameProvider =
     StateNotifierProvider.autoDispose((ref) => RegisterUsernameRepository());
 final pickDateProvider =
     StateNotifierProvider.autoDispose((_) => PickDateProvider());
-
-// final userNameProvider = FutureProvider.autoDispose<String>((ref) async {
-//   final stateIdentifier = ref.watch(nfcResultProvider.state);
-//
-//   if (stateIdentifier.isEmpty) {
-//     return null;
-//   } else {
-//     var _userName =
-//         await UserTableProvider().getUserFromIdentifier(stateIdentifier);
-//     return _userName;
-//   }
-// });
 
 class Borrow extends HookWidget {
   static const routeName = '/borrow';
@@ -98,13 +84,7 @@ class Borrow extends HookWidget {
 
     final reader = NfcReaderWidget();
 
-    if (Platform.isAndroid) {
-      // Android のとき
-      reader.read(exporterNfc);
-    } else if (Platform.isIOS) {
-      // iOSのとき
-      reader.readTest(exporterNfc);
-    }
+    reader.read(stateReader, exporterNfc);
 
     // 氏名登録画面（register_user）への遷移
     _navigateAndDisplay(BuildContext context) async {
@@ -124,12 +104,15 @@ class Borrow extends HookWidget {
         var _userName =
             await UserTableProvider().getUserFromIdentifier(stateReader);
         exporterUserName.exportResult(_userName);
+      } else {
+        //  登録せずに戻るボタンで戻ってくるとき
+        exporterNfc.exportResult('');
       }
     }
 
     // NFCのidentifierでユーザーが登録されているか確認する
     // 登録がなければ登録画面に遷移させる
-    Future<void> _getUserNameOrNavigate(BuildContext context) async {
+    _() async {
       if (stateReader.isNotEmpty) {
         var _userName =
             await UserTableProvider().getUserFromIdentifier(stateReader);
@@ -141,35 +124,21 @@ class Borrow extends HookWidget {
       }
     }
 
+    _(); // providerが stateReader に値が入ったタイミングで関連Widgetを再ビルドしてくれるのでここで呼んでおく
+
     Widget _displayText() {
       if (stateReader.isEmpty) {
         return Text('社員カードをかざしてください');
       } else if (stateUserName.isEmpty) {
-        return Text('identifier : $stateReader\n登録確認ボタンを押してください');
+        return Text('Identifier : $stateReader');
       }
-      return Text('identifier: $stateReader\nName     : $stateUserName');
+      return Text('Identifier: $stateReader\nName     : $stateUserName');
     }
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        // テストで適当なNFCのidentifierを登録する時はこちらのボタンを使用
-        /*
-        RaisedButton(
-          child: Text('NFC id register'),
-          onPressed: () {
-            exporterNfc.exportResult('test');
-          },
-        ),
-        */
         _displayText(),
-        FlatButton(
-          color: Colors.teal,
-          child: Text('ユーザー登録確認', style: TextStyle(color: Colors.white)),
-          onPressed: () {
-            _getUserNameOrNavigate(context);
-          },
-        ),
       ],
     );
   }

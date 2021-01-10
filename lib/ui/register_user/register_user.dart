@@ -4,9 +4,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:librarymanagerclient/models/user/user.dart';
 import 'package:librarymanagerclient/providers/db/user/user_table_provider.dart';
 
-//final registerUsernameRepository =
-//     StateNotifierProvider.autoDispose((_) => RegisterUsernameRepository());
-
 class RegisterUser extends HookWidget {
   static const routeName = '/borrow/register_user';
 
@@ -53,13 +50,14 @@ Widget _inputText(BuildContext context) {
     final User user = User(
       identifier: identifier,
       name: _userName.replaceAll(RegExp(r'\s'), ''),
+      // 借りる・返却のみできるユーザー
+      permission: 1,
       createdAt: DateTime.now().toString(),
       updatedAt: DateTime.now().toString(),
     );
 
     // insertした列番号が返る
     var result = await UserTableProvider().registerUser(user);
-    print(result);
     if (result is int) {
       Navigator.of(context).popUntil(ModalRoute.withName('/borrow'));
     } else {

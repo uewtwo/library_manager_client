@@ -8,7 +8,6 @@ part of 'user.dart';
 // **************************************************************************
 
 T _$identity<T>(T value) => value;
-
 User _$UserFromJson(Map<String, dynamic> json) {
   return _User.fromJson(json);
 }
@@ -21,12 +20,14 @@ class _$UserTearOff {
       {int id,
       @required String identifier,
       @required String name,
+      @required int permission,
       @required String createdAt,
       @required String updatedAt}) {
     return _User(
       id: id,
       identifier: identifier,
       name: name,
+      permission: permission,
       createdAt: createdAt,
       updatedAt: updatedAt,
     );
@@ -38,28 +39,24 @@ const $User = _$UserTearOff();
 
 mixin _$User {
   int get id;
-
   String get identifier;
-
   String get name;
-
+  int get permission;
   String get createdAt;
-
   String get updatedAt;
 
   Map<String, dynamic> toJson();
-
   $UserCopyWith<User> get copyWith;
 }
 
 abstract class $UserCopyWith<$Res> {
   factory $UserCopyWith(User value, $Res Function(User) then) =
       _$UserCopyWithImpl<$Res>;
-
   $Res call(
       {int id,
       String identifier,
       String name,
+      int permission,
       String createdAt,
       String updatedAt});
 }
@@ -68,7 +65,6 @@ class _$UserCopyWithImpl<$Res> implements $UserCopyWith<$Res> {
   _$UserCopyWithImpl(this._value, this._then);
 
   final User _value;
-
   // ignore: unused_field
   final $Res Function(User) _then;
 
@@ -77,6 +73,7 @@ class _$UserCopyWithImpl<$Res> implements $UserCopyWith<$Res> {
     Object id = freezed,
     Object identifier = freezed,
     Object name = freezed,
+    Object permission = freezed,
     Object createdAt = freezed,
     Object updatedAt = freezed,
   }) {
@@ -85,6 +82,7 @@ class _$UserCopyWithImpl<$Res> implements $UserCopyWith<$Res> {
       identifier:
           identifier == freezed ? _value.identifier : identifier as String,
       name: name == freezed ? _value.name : name as String,
+      permission: permission == freezed ? _value.permission : permission as int,
       createdAt: createdAt == freezed ? _value.createdAt : createdAt as String,
       updatedAt: updatedAt == freezed ? _value.updatedAt : updatedAt as String,
     ));
@@ -94,12 +92,12 @@ class _$UserCopyWithImpl<$Res> implements $UserCopyWith<$Res> {
 abstract class _$UserCopyWith<$Res> implements $UserCopyWith<$Res> {
   factory _$UserCopyWith(_User value, $Res Function(_User) then) =
       __$UserCopyWithImpl<$Res>;
-
   @override
   $Res call(
       {int id,
       String identifier,
       String name,
+      int permission,
       String createdAt,
       String updatedAt});
 }
@@ -117,6 +115,7 @@ class __$UserCopyWithImpl<$Res> extends _$UserCopyWithImpl<$Res>
     Object id = freezed,
     Object identifier = freezed,
     Object name = freezed,
+    Object permission = freezed,
     Object createdAt = freezed,
     Object updatedAt = freezed,
   }) {
@@ -125,6 +124,7 @@ class __$UserCopyWithImpl<$Res> extends _$UserCopyWithImpl<$Res>
       identifier:
           identifier == freezed ? _value.identifier : identifier as String,
       name: name == freezed ? _value.name : name as String,
+      permission: permission == freezed ? _value.permission : permission as int,
       createdAt: createdAt == freezed ? _value.createdAt : createdAt as String,
       updatedAt: updatedAt == freezed ? _value.updatedAt : updatedAt as String,
     ));
@@ -137,10 +137,12 @@ class _$_User implements _User {
       {this.id,
       @required this.identifier,
       @required this.name,
+      @required this.permission,
       @required this.createdAt,
       @required this.updatedAt})
       : assert(identifier != null),
         assert(name != null),
+        assert(permission != null),
         assert(createdAt != null),
         assert(updatedAt != null);
 
@@ -154,13 +156,15 @@ class _$_User implements _User {
   @override
   final String name;
   @override
+  final int permission;
+  @override
   final String createdAt;
   @override
   final String updatedAt;
 
   @override
   String toString() {
-    return 'User(id: $id, identifier: $identifier, name: $name, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'User(id: $id, identifier: $identifier, name: $name, permission: $permission, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -174,6 +178,9 @@ class _$_User implements _User {
                     .equals(other.identifier, identifier)) &&
             (identical(other.name, name) ||
                 const DeepCollectionEquality().equals(other.name, name)) &&
+            (identical(other.permission, permission) ||
+                const DeepCollectionEquality()
+                    .equals(other.permission, permission)) &&
             (identical(other.createdAt, createdAt) ||
                 const DeepCollectionEquality()
                     .equals(other.createdAt, createdAt)) &&
@@ -188,6 +195,7 @@ class _$_User implements _User {
       const DeepCollectionEquality().hash(id) ^
       const DeepCollectionEquality().hash(identifier) ^
       const DeepCollectionEquality().hash(name) ^
+      const DeepCollectionEquality().hash(permission) ^
       const DeepCollectionEquality().hash(createdAt) ^
       const DeepCollectionEquality().hash(updatedAt);
 
@@ -206,6 +214,7 @@ abstract class _User implements User {
       {int id,
       @required String identifier,
       @required String name,
+      @required int permission,
       @required String createdAt,
       @required String updatedAt}) = _$_User;
 
@@ -213,19 +222,16 @@ abstract class _User implements User {
 
   @override
   int get id;
-
   @override
   String get identifier;
-
   @override
   String get name;
-
+  @override
+  int get permission;
   @override
   String get createdAt;
-
   @override
   String get updatedAt;
-
   @override
   _$UserCopyWith<_User> get copyWith;
 }

@@ -14,7 +14,8 @@ class UserTableProvider extends DBProvider {
       CREATE TABLE $tableName(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         identifier STRING,
-        name INTEGER,
+        permission INTEGER,
+        name STRING,
         createdAt TEXT NOT NULL,
         updatedAt TEXT NOT NULL
       );
