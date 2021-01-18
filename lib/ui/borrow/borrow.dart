@@ -54,11 +54,19 @@ class Borrow extends HookWidget {
     final ScanResult stateScanner = useProvider(barcodeResultProvider.state);
     final exporter = useProvider(barcodeResultProvider);
 
+    Widget _displayText() {
+      if (stateScanner.rawContent.isEmpty) {
+        return Text('Scan result here.');
+      } else {
+        return Text(stateScanner.rawContent);
+      }
+    }
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
         _buildScanner(exporter),
-        Text(stateScanner.rawContent),
+        _displayText(),
       ],
     );
   }
