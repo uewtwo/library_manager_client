@@ -118,7 +118,7 @@ class Register extends HookWidget {
               return Text('');
             }
           },
-        ), // Text(stateScanner.rawContent),
+        ),
       ],
     );
   }
