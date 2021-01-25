@@ -1,5 +1,6 @@
 import 'package:librarymanagerclient/errors/book/BookNotFoundException.dart';
 import 'package:librarymanagerclient/models/book/book.dart';
+import 'package:librarymanagerclient/providers/client/ndlapi_client.dart';
 import 'package:librarymanagerclient/providers/db/db_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -36,7 +37,7 @@ class BookTableProvider extends DBProvider {
     if (res.length == 0) {
       throw BookNotFoundException();
     }
-    var book = {...res[0]};
+    var book = {...res[res.length - 1]};
     book["isbn"] = book["isbn"].toString();
     return Book.fromJson(book);
   }
@@ -71,7 +72,7 @@ class BookTableProvider extends DBProvider {
 
   Future<int> saveBookByIsbn(String isbn) async {
     // FIXME: 国立国会図書館から本のタイトルを取得する
-    final String title = "hogehoge";
+    final String title = await NdlApiClient().getBookByIsbn(isbn);
     final String now = DateTime.now().toString();
     final Book book = Book(
       isbn: isbn,

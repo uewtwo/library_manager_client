@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:librarymanagerclient/ui/borrow/borrow.dart';
 import 'package:librarymanagerclient/ui/home/home.dart';
+import 'package:librarymanagerclient/ui/register/register.dart';
 import 'package:librarymanagerclient/ui/register_user/register_user.dart';
 
 class LibraryManagerApp extends HookWidget {
@@ -15,6 +16,7 @@ class LibraryManagerApp extends HookWidget {
       routes: <String, WidgetBuilder>{
         Home.routeName: (BuildContext context) => Home(),
         Borrow.routeName: (BuildContext context) => Borrow(),
+        Register.routeName: (BuildContext context) => Register(),
         RegisterUser.routeName: (BuildContext context) => RegisterUser(),
       },
 //      home: Home() // Define routes: Home.routeName,

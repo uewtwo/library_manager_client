@@ -59,7 +59,7 @@ Widget _buildManagerMenu(BuildContext context) {
       RaisedButton(
         child: Text('REGISTER'),
         onPressed: () {
-//            Navigator.of(context).pushNamed('/register');
+          Navigator.of(context).pushNamed('/register');
         },
       ),
       RaisedButton(
