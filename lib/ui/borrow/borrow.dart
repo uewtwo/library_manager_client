@@ -3,6 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/all.dart';
+import 'package:librarymanagerclient/models/book/book_state.dart';
+import 'package:librarymanagerclient/providers/db/book/book_state_table_provider.dart';
+import 'package:librarymanagerclient/providers/db/book/book_table_provider.dart';
 import 'package:librarymanagerclient/providers/db/user/user_table_provider.dart';
 import 'package:librarymanagerclient/repositories/barcode_result_repository.dart';
 import 'package:librarymanagerclient/repositories/nfc_result_repository.dart';
@@ -22,6 +25,23 @@ final userNameProvider =
 final pickDateProvider =
     StateNotifierProvider.autoDispose((_) => PickDateProvider());
 
+final bookProvider = FutureProvider.autoDispose((ref) async {
+  final isbn = ref.watch(barcodeResultProvider.state).rawContent;
+  if (isbn.isNotEmpty) {
+    final book = await BookTableProvider().getBook(isbn);
+    final bookState =
+        await BookStateTableProvider().searchBookNotBorrowed(isbn);
+    return {
+      'bookName': book.title,
+      'bookSeq': bookState.seq,
+      'bookCreatedAt': bookState.createdAt,
+    };
+  } else {
+    return {'bookName': '', 'bookSeq': 0, 'bookCreatedAt': ''};
+  }
+});
+
+// ignore: must_be_immutable
 class Borrow extends HookWidget {
   static const routeName = '/borrow';
 
@@ -43,22 +63,35 @@ class Borrow extends HookWidget {
             _buildBarcodeScanning(),
             _buildNfcReading(context),
             _buildReturnDate(),
-            _buildConfirm(),
+            _buildConfirm(context),
           ],
         ),
       ),
     );
   }
 
+  BookState bookState = BookState(
+    isbn: '',
+    seq: 0,
+    isBorrowed: 0,
+    holderId: '',
+    borrowFrom: '',
+    borrowTo: '',
+    createdAt: '',
+    updatedAt: '',
+  );
+
   Widget _buildBarcodeScanning() {
     final ScanResult stateScanner = useProvider(barcodeResultProvider.state);
     final exporter = useProvider(barcodeResultProvider);
+
+    final book = useProvider(bookProvider);
 
     Widget _displayText() {
       if (stateScanner.rawContent.isEmpty) {
         return Text('Scan result here.');
       } else {
-        return Text(stateScanner.rawContent);
+        return Text('isbn: ${stateScanner.rawContent}');
       }
     }
 
@@ -67,6 +100,18 @@ class Borrow extends HookWidget {
       children: <Widget>[
         _buildScanner(exporter),
         _displayText(),
+        book.when(
+          loading: () => const CircularProgressIndicator(),
+          error: (err, stack) => Text('Error: $err'),
+          data: (book) {
+            bookState = bookState.copyWith(
+              isbn: stateScanner.rawContent,
+              seq: book['bookSeq'],
+              createdAt: book['bookCreatedAt'],
+            );
+            return Text(book['bookName']);
+          },
+        ),
       ],
     );
   }
@@ -91,8 +136,11 @@ class Borrow extends HookWidget {
     final exporterUserName = useProvider(userNameProvider);
 
     final reader = NfcReaderWidget();
-
     reader.read(stateReader, exporterNfc);
+
+    bookState = bookState.copyWith(
+      holderId: stateReader,
+    );
 
     // 氏名登録画面（register_user）への遷移
     _navigateAndDisplay(BuildContext context) async {
@@ -156,6 +204,12 @@ class Borrow extends HookWidget {
     final PickDateProvider exporter = useProvider(pickDateProvider);
     final context = useContext();
 
+    final dateNow = DateTime.now();
+    bookState = bookState.copyWith(
+      borrowFrom: '${dateNow.year}/${dateNow.month}/${dateNow.day}',
+      borrowTo: '${statePicker.year}/${statePicker.month}/${statePicker.day}',
+    );
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -177,13 +231,48 @@ class Borrow extends HookWidget {
     );
   }
 
-  Widget _buildConfirm() {
-    return Container(
-      child: RaisedButton(
-        onPressed: () {},
-        // TODO: Implement function: Validation and Confirm to borrow books.
-        child: Text('BORROW!'),
-      ),
+  Widget _buildConfirm(context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        RaisedButton(
+          onPressed: () async {
+            if (bookState.isValid()) {
+              bookState = bookState.copyWith(
+                isBorrowed: 1,
+                updatedAt: DateTime.now().toString(),
+              );
+              print(bookState.toJson());
+              await BookStateTableProvider().updateBookState(bookState);
+              Navigator.pop(context);
+            } else {
+              // 入力されていない項目についてダイアログで表示する
+              var _text = '';
+              if (!bookState.isValidIsbn) {
+                _text += '借りたい本のバーコードを読み込んでください\n';
+              }
+              if (!bookState.isValidHolderId) {
+                _text += '社員カードをかざしてください\n';
+              }
+              if (!bookState.isValidBorrowTo) {
+                _text += '返却日を選択してください\n';
+              }
+              showDialog(
+                context: context,
+                builder: (_) => AlertDialog(
+                  title: Text("ERROR"),
+                  content: Text(
+                    "$_text",
+                    style: TextStyle(height: 2.0),
+                  ),
+                ),
+              );
+            }
+          },
+          // TODO: Implement function: Validation and Confirm to borrow books.
+          child: Text('BORROW!'),
+        ),
+      ],
     );
   }
 }

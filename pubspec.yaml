@@ -33,7 +33,7 @@ dependencies:
   # For My Application
   dio: ^3.0.10
   dio_http_cache: ^0.2.9
-  json_serializable: any
+  #  json_serializable: any
   freezed_annotation: ^0.11.0+1
   shared_preferences: any
   enum_to_string: any
