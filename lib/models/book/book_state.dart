@@ -25,9 +25,7 @@ abstract class BookState implements _$BookState {
 
   bool get isValidHolderId => holderId.isNotEmpty;
 
-  bool get isValidBorrowTo =>
-      borrowTo !=
-      '${DateTime.now().year}/${DateTime.now().month}/${DateTime.now().day}';
+  bool get isValidBorrowTo => borrowTo.isNotEmpty;
 
   bool isValid() {
     return isValidIsbn && isValidSeq && isValidHolderId && isValidBorrowTo;

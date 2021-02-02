@@ -8,6 +8,7 @@ import 'package:librarymanagerclient/providers/db/book/book_state_table_provider
 import 'package:librarymanagerclient/providers/db/book/book_table_provider.dart';
 import 'package:librarymanagerclient/providers/db/user/user_table_provider.dart';
 import 'package:librarymanagerclient/repositories/barcode_result_repository.dart';
+import 'package:librarymanagerclient/repositories/book_state_repository.dart';
 import 'package:librarymanagerclient/repositories/nfc_result_repository.dart';
 import 'package:librarymanagerclient/repositories/pick_date_provider.dart';
 import 'package:librarymanagerclient/repositories/register_username_repository.dart';
@@ -41,7 +42,9 @@ final bookProvider = FutureProvider.autoDispose((ref) async {
   }
 });
 
-// ignore: must_be_immutable
+final bookStateProvider =
+    StateNotifierProvider.autoDispose((_) => BookStateRepository());
+
 class Borrow extends HookWidget {
   static const routeName = '/borrow';
 
@@ -70,22 +73,23 @@ class Borrow extends HookWidget {
     );
   }
 
-  BookState bookState = BookState(
-    isbn: '',
-    seq: 0,
-    isBorrowed: 0,
-    holderId: '',
-    borrowFrom: '',
-    borrowTo: '',
-    createdAt: '',
-    updatedAt: '',
-  );
+  // BookState bookState = BookState(
+  //   isbn: '',
+  //   seq: 0,
+  //   isBorrowed: 0,
+  //   holderId: '',
+  //   borrowFrom: '',
+  //   borrowTo: '',
+  //   createdAt: '',
+  //   updatedAt: '',
+  // );
 
   Widget _buildBarcodeScanning() {
     final ScanResult stateScanner = useProvider(barcodeResultProvider.state);
     final exporter = useProvider(barcodeResultProvider);
 
     final book = useProvider(bookProvider);
+    final exporterBookState = useProvider(bookStateProvider);
 
     Widget _displayText() {
       if (stateScanner.rawContent.isEmpty) {
@@ -104,12 +108,16 @@ class Borrow extends HookWidget {
           loading: () => const CircularProgressIndicator(),
           error: (err, stack) => Text('Error: $err'),
           data: (book) {
-            bookState = bookState.copyWith(
-              isbn: stateScanner.rawContent,
-              seq: book['bookSeq'],
-              createdAt: book['bookCreatedAt'],
-            );
-            return Text(book['bookName']);
+            if (book['bookName'].toString().isEmpty) {
+              return Text('');
+            } else {
+              exporterBookState.exportResult({
+                'isbn': stateScanner.rawContent,
+                'seq': book['bookSeq'],
+                'createdAt': book['bookCreatedAt']
+              });
+              return Text(book['bookName']);
+            }
           },
         ),
       ],
@@ -135,12 +143,10 @@ class Borrow extends HookWidget {
     final String stateUserName = useProvider(userNameProvider.state);
     final exporterUserName = useProvider(userNameProvider);
 
+    final exporterBookState = useProvider(bookStateProvider);
+
     final reader = NfcReaderWidget();
     reader.read(stateReader, exporterNfc);
-
-    bookState = bookState.copyWith(
-      holderId: stateReader,
-    );
 
     // 氏名登録画面（register_user）への遷移
     _navigateAndDisplay(BuildContext context) async {
@@ -176,6 +182,7 @@ class Borrow extends HookWidget {
           _navigateAndDisplay(context);
         } else {
           exporterUserName.exportResult(_userName);
+          exporterBookState.exportResult({'holderId': stateReader});
         }
       }
     }
@@ -204,11 +211,8 @@ class Borrow extends HookWidget {
     final PickDateProvider exporter = useProvider(pickDateProvider);
     final context = useContext();
 
+    final exporterBookState = useProvider(bookStateProvider);
     final dateNow = DateTime.now();
-    bookState = bookState.copyWith(
-      borrowFrom: '${dateNow.year}/${dateNow.month}/${dateNow.day}',
-      borrowTo: '${statePicker.year}/${statePicker.month}/${statePicker.day}',
-    );
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -222,6 +226,11 @@ class Borrow extends HookWidget {
                 firstDate: DateTime.now(),
               ).pickDate(context),
             );
+            exporterBookState.exportResult({
+              'borrowFrom': '${dateNow.year}/${dateNow.month}/${dateNow.day}',
+              'borrowTo':
+                  '${statePicker.year}/${statePicker.month}/${statePicker.day}'
+            });
           },
           child: Text(
             '${statePicker.year}/${statePicker.month}/${statePicker.day}',
@@ -232,20 +241,21 @@ class Borrow extends HookWidget {
   }
 
   Widget _buildConfirm(context) {
+    final BookState bookState = useProvider(bookStateProvider.state);
+    final exporterBookState = useProvider(bookStateProvider);
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         RaisedButton(
           onPressed: () async {
             if (bookState.isValid()) {
-              bookState = bookState.copyWith(
-                isBorrowed: 1,
-                updatedAt: DateTime.now().toString(),
-              );
+              exporterBookState.exportResult(
+                  {'isBorrowed': 1, 'updatedAt': DateTime.now().toString()});
               print(bookState.toJson());
               await BookStateTableProvider().updateBookState(bookState);
               Navigator.pop(context);
             } else {
+              print(bookState.toJson());
               // 入力されていない項目についてダイアログで表示する
               var _text = '';
               if (!bookState.isValidIsbn) {
