@@ -43,7 +43,7 @@ final bookProvider = FutureProvider.autoDispose((ref) async {
 });
 
 final bookStateProvider =
-    StateNotifierProvider.autoDispose((_) => BookStateRepository());
+    StateNotifierProvider.autoDispose((ref) => BookStateRepository());
 
 class Borrow extends HookWidget {
   static const routeName = '/borrow';
@@ -148,6 +148,8 @@ class Borrow extends HookWidget {
     final reader = NfcReaderWidget();
     reader.read(stateReader, exporterNfc);
 
+    exporterBookState.exportResult({'holderId': stateReader});
+
     // 氏名登録画面（register_user）への遷移
     _navigateAndDisplay(BuildContext context) async {
       var result = await Navigator.of(context).pushNamed(
@@ -182,7 +184,6 @@ class Borrow extends HookWidget {
           _navigateAndDisplay(context);
         } else {
           exporterUserName.exportResult(_userName);
-          exporterBookState.exportResult({'holderId': stateReader});
         }
       }
     }
@@ -212,8 +213,10 @@ class Borrow extends HookWidget {
     final context = useContext();
 
     final exporterBookState = useProvider(bookStateProvider);
-    final dateNow = DateTime.now();
 
+    exporterBookState.exportResult({
+      'borrowTo': '${statePicker.year}/${statePicker.month}/${statePicker.day}'
+    });
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -226,11 +229,6 @@ class Borrow extends HookWidget {
                 firstDate: DateTime.now(),
               ).pickDate(context),
             );
-            exporterBookState.exportResult({
-              'borrowFrom': '${dateNow.year}/${dateNow.month}/${dateNow.day}',
-              'borrowTo':
-                  '${statePicker.year}/${statePicker.month}/${statePicker.day}'
-            });
           },
           child: Text(
             '${statePicker.year}/${statePicker.month}/${statePicker.day}',
@@ -243,14 +241,16 @@ class Borrow extends HookWidget {
   Widget _buildConfirm(context) {
     final BookState bookState = useProvider(bookStateProvider.state);
     final exporterBookState = useProvider(bookStateProvider);
+
+    exporterBookState.exportResult(
+        {'isBorrowed': 1, 'updatedAt': DateTime.now().toString()});
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         RaisedButton(
           onPressed: () async {
             if (bookState.isValid()) {
-              exporterBookState.exportResult(
-                  {'isBorrowed': 1, 'updatedAt': DateTime.now().toString()});
               print(bookState.toJson());
               await BookStateTableProvider().updateBookState(bookState);
               Navigator.pop(context);
