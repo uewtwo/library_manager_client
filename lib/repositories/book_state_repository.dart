@@ -15,8 +15,8 @@ class BookStateRepository extends StateNotifier<BookState> {
           updatedAt: '',
         ));
 
-  void exportResult(Map map) {
-    Future.delayed(
+  Future<void> exportResult(Map map) async {
+    await Future.delayed(
       Duration.zero,
       () => map.forEach((key, value) {
         switch (key) {

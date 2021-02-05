@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/all.dart';
-import 'package:librarymanagerclient/models/book/book_state.dart';
 import 'package:librarymanagerclient/providers/db/book/book_state_table_provider.dart';
 import 'package:librarymanagerclient/providers/db/book/book_table_provider.dart';
 import 'package:librarymanagerclient/providers/db/user/user_table_provider.dart';
@@ -73,17 +72,6 @@ class Borrow extends HookWidget {
     );
   }
 
-  // BookState bookState = BookState(
-  //   isbn: '',
-  //   seq: 0,
-  //   isBorrowed: 0,
-  //   holderId: '',
-  //   borrowFrom: '',
-  //   borrowTo: '',
-  //   createdAt: '',
-  //   updatedAt: '',
-  // );
-
   Widget _buildBarcodeScanning() {
     final ScanResult stateScanner = useProvider(barcodeResultProvider.state);
     final exporter = useProvider(barcodeResultProvider);
@@ -148,8 +136,6 @@ class Borrow extends HookWidget {
     final reader = NfcReaderWidget();
     reader.read(stateReader, exporterNfc);
 
-    exporterBookState.exportResult({'holderId': stateReader});
-
     // 氏名登録画面（register_user）への遷移
     _navigateAndDisplay(BuildContext context) async {
       var result = await Navigator.of(context).pushNamed(
@@ -182,8 +168,9 @@ class Borrow extends HookWidget {
             await UserTableProvider().getUserFromIdentifier(stateReader);
         if (_userName == null) {
           _navigateAndDisplay(context);
-        } else {
+        } else if (_userName != stateUserName) {
           exporterUserName.exportResult(_userName);
+          exporterBookState.exportResult({'holderId': stateReader});
         }
       }
     }
@@ -210,25 +197,24 @@ class Borrow extends HookWidget {
   Widget _buildReturnDate() {
     final DateTime statePicker = useProvider(pickDateProvider.state);
     final PickDateProvider exporter = useProvider(pickDateProvider);
+    final exporterBookState = useProvider(bookStateProvider);
     final context = useContext();
 
-    final exporterBookState = useProvider(bookStateProvider);
-
-    exporterBookState.exportResult({
-      'borrowTo': '${statePicker.year}/${statePicker.month}/${statePicker.day}'
-    });
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text('Return Date: '),
         RaisedButton(
           onPressed: () async {
-            exporter.exportResult(
-              await DatePickerWidget(
-                initialDate: statePicker,
-                firstDate: DateTime.now(),
-              ).pickDate(context),
-            );
+            final pickedDate = await DatePickerWidget(
+              initialDate: statePicker,
+              firstDate: DateTime.now(),
+            ).pickDate(context);
+            exporter.exportResult(pickedDate);
+            await exporterBookState.exportResult({
+              'borrowTo':
+                  '${pickedDate.year}/${pickedDate.month}/${pickedDate.day}'
+            });
           },
           child: Text(
             '${statePicker.year}/${statePicker.month}/${statePicker.day}',
@@ -239,17 +225,19 @@ class Borrow extends HookWidget {
   }
 
   Widget _buildConfirm(context) {
-    final BookState bookState = useProvider(bookStateProvider.state);
     final exporterBookState = useProvider(bookStateProvider);
-
-    exporterBookState.exportResult(
-        {'isBorrowed': 1, 'updatedAt': DateTime.now().toString()});
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         RaisedButton(
           onPressed: () async {
+            await exporterBookState.exportResult(
+                {'isBorrowed': 1, 'updatedAt': DateTime.now().toString()});
+
+            // ignore: invalid_use_of_protected_member
+            final bookState = exporterBookState.state;
+
             if (bookState.isValid()) {
               print(bookState.toJson());
               await BookStateTableProvider().updateBookState(bookState);
