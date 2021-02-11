@@ -5,6 +5,7 @@ import 'package:librarymanagerclient/ui/borrow/borrow.dart';
 import 'package:librarymanagerclient/ui/home/home.dart';
 import 'package:librarymanagerclient/ui/register/register.dart';
 import 'package:librarymanagerclient/ui/register_user/register_user.dart';
+import 'package:librarymanagerclient/ui/return/return.dart';
 
 class LibraryManagerApp extends HookWidget {
   const LibraryManagerApp({Key key}) : super(key: key);
@@ -16,6 +17,7 @@ class LibraryManagerApp extends HookWidget {
       routes: <String, WidgetBuilder>{
         Home.routeName: (BuildContext context) => Home(),
         Borrow.routeName: (BuildContext context) => Borrow(),
+        Return.routeName: (BuildContext context) => Return(),
         Register.routeName: (BuildContext context) => Register(),
         RegisterUser.routeName: (BuildContext context) => RegisterUser(),
       },

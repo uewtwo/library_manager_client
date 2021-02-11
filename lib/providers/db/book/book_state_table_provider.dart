@@ -91,6 +91,19 @@ class BookStateTableProvider extends DBProvider {
         whereArgs: [bookState.isbn, bookState.seq]);
   }
 
+  Future<List<Map<String, dynamic>>> getBookStateByUser(String holderId) async {
+    final db = await table;
+    final List<Map<String, dynamic>> res = (await db.query(
+      tableName,
+      where: "holderId = ?",
+      whereArgs: [holderId],
+    ));
+    if (res.length == 0) {
+      throw BookStateNotFoundException();
+    }
+    return res;
+  }
+
   Future<List<Map<String, dynamic>>> rawQuery(String sql) async {
     final db = await table;
     return await db.rawQuery(sql);

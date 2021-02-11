@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:librarymanagerclient/ui/borrow/borrow.dart';
+import 'package:librarymanagerclient/ui/return/return.dart';
 
 class Home extends StatelessWidget {
   static const routeName = '/';
@@ -38,7 +39,7 @@ Widget _buildUserMenu(BuildContext context) {
       RaisedButton(
         child: Text('RETURN'),
         onPressed: () {
-//            Navigator.of(context).pushNamed('/return');
+          Navigator.of(context).pushNamed(Return.routeName);
         },
       ),
       RaisedButton(
