@@ -154,6 +154,7 @@ class Borrow extends HookWidget {
         var _userName =
             await UserTableProvider().getUserFromIdentifier(stateReader);
         exporterUserName.exportResult(_userName);
+        exporterBookState.exportResult({'holderId': stateReader});
       } else {
         //  登録せずに戻るボタンで戻ってくるとき
         exporterNfc.exportResult('');
@@ -241,7 +242,7 @@ class Borrow extends HookWidget {
             if (bookState.isValid()) {
               print(bookState.toJson());
               await BookStateTableProvider().updateBookState(bookState);
-              Navigator.pop(context);
+              Navigator.pop(context, true);
             } else {
               print(bookState.toJson());
               // 入力されていない項目についてダイアログで表示する

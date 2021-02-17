@@ -169,7 +169,7 @@ class Return extends HookWidget {
                         await BookStateTableProvider()
                             .updateBookState(bookState);
                       });
-                      Navigator.pop(context);
+                      Navigator.pop(context, true);
                     },
                   ),
                   Container(
