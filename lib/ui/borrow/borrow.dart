@@ -3,8 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/all.dart';
+import 'package:librarymanagerclient/models/history/book_history.dart';
 import 'package:librarymanagerclient/providers/db/book/book_state_table_provider.dart';
 import 'package:librarymanagerclient/providers/db/book/book_table_provider.dart';
+import 'package:librarymanagerclient/providers/db/history/book_history_table_provider.dart';
 import 'package:librarymanagerclient/providers/db/user/user_table_provider.dart';
 import 'package:librarymanagerclient/repositories/barcode_result_repository.dart';
 import 'package:librarymanagerclient/repositories/book_state_repository.dart';
@@ -241,7 +243,11 @@ class Borrow extends HookWidget {
 
             if (bookState.isValid()) {
               print(bookState.toJson());
+              final bookHistory =
+                  BookHistory.fromJsonBookState(bookState.toJson());
+              print(bookHistory.toJson());
               await BookStateTableProvider().updateBookState(bookState);
+              await BookHistoryTableProvider().saveBookHistory(bookHistory);
               Navigator.pop(context, true);
             } else {
               print(bookState.toJson());
