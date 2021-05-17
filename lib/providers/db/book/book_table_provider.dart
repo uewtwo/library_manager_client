@@ -71,7 +71,6 @@ class BookTableProvider extends DBProvider {
   }
 
   Future<int> saveBookByIsbn(String isbn) async {
-    // FIXME: 国立国会図書館から本のタイトルを取得する
     final String title = await NdlApiClient().getBookByIsbn(isbn);
     final String now = DateTime.now().toString();
     final Book book = Book(
