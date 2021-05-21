@@ -68,11 +68,11 @@ class BookStateTableProvider extends DBProvider {
   // Used to initialize book state.
   Future<int> saveBookByIsbn(String isbn) async {
     final bookProvider = BookTableProvider();
-    final int nextSeq = (await bookProvider.getNumberOfBooks(isbn)) + 1;
+    final int seq = (await bookProvider.getNumberOfBooks(isbn));
     final String now = DateTime.now().toString();
     final BookState bookState = BookState(
       isbn: isbn,
-      seq: nextSeq,
+      seq: seq,
       isBorrowed: 0,
       holderId: null,
       borrowFrom: null,
@@ -82,5 +82,30 @@ class BookStateTableProvider extends DBProvider {
     );
 
     return saveBookState(bookState);
+  }
+
+  Future<int> updateBookState(BookState bookState) async {
+    final db = await table;
+    return await db.update(tableName, bookState.toJson(),
+        where: 'isbn = ? and seq = ?',
+        whereArgs: [bookState.isbn, bookState.seq]);
+  }
+
+  Future<List<Map<String, dynamic>>> getBookStateByUser(String holderId) async {
+    final db = await table;
+    final List<Map<String, dynamic>> res = (await db.query(
+      tableName,
+      where: "holderId = ?",
+      whereArgs: [holderId],
+    ));
+    if (res.length == 0) {
+      throw BookStateNotFoundException();
+    }
+    return res;
+  }
+
+  Future<List<Map<String, dynamic>>> rawQuery(String sql) async {
+    final db = await table;
+    return await db.rawQuery(sql);
   }
 }

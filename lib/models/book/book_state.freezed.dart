@@ -154,7 +154,7 @@ class __$BookStateCopyWithImpl<$Res> extends _$BookStateCopyWithImpl<$Res>
 }
 
 @JsonSerializable()
-class _$_BookState implements _BookState {
+class _$_BookState extends _BookState {
   const _$_BookState(
       {@required this.isbn,
       @required this.seq,
@@ -168,7 +168,8 @@ class _$_BookState implements _BookState {
         assert(seq != null),
         assert(isBorrowed != null),
         assert(createdAt != null),
-        assert(updatedAt != null);
+        assert(updatedAt != null),
+        super._();
 
   factory _$_BookState.fromJson(Map<String, dynamic> json) =>
       _$_$_BookStateFromJson(json);
@@ -248,7 +249,8 @@ class _$_BookState implements _BookState {
   }
 }
 
-abstract class _BookState implements BookState {
+abstract class _BookState extends BookState {
+  const _BookState._() : super._();
   const factory _BookState(
       {@required String isbn,
       @required int seq,
