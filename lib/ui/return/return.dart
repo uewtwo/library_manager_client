@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/all.dart';
 import 'package:librarymanagerclient/models/book/book_state.dart';
+import 'package:librarymanagerclient/models/history/book_history.dart';
 import 'package:librarymanagerclient/providers/db/book/book_state_table_provider.dart';
 import 'package:librarymanagerclient/providers/db/book/book_table_provider.dart';
+import 'package:librarymanagerclient/providers/db/history/book_history_table_provider.dart';
 import 'package:librarymanagerclient/providers/db/user/user_table_provider.dart';
 import 'package:librarymanagerclient/repositories/check_return_book_repository.dart';
 import 'package:librarymanagerclient/ui/borrow/borrow.dart';
@@ -165,9 +167,14 @@ class Return extends HookWidget {
                           createdAt: books[ix]['createdAt'],
                           updatedAt: DateTime.now().toString(),
                         );
-                        print(bookState);
+                        print(bookState.toJson());
+                        final bookHistory =
+                            BookHistory.fromJsonBookState(bookState.toJson());
+                        print(bookHistory.toJson());
                         await BookStateTableProvider()
                             .updateBookState(bookState);
+                        await BookHistoryTableProvider()
+                            .saveBookHistory(bookHistory);
                       });
                       Navigator.pop(context, true);
                     },
