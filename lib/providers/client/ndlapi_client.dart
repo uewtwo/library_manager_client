@@ -1,11 +1,10 @@
 import 'package:dio/dio.dart';
+import 'package:librarymanagerclient/models/validators/isbn_validators.dart';
 import 'package:xml/xml.dart';
 
 class NdlApiClient {
   Future getBookByIsbn(String isbn) async {
-    // ISBNかどうかの判定
-    bool isIsbn = new RegExp(r'^978').hasMatch(isbn);
-    if (isIsbn) {
+    if (IsbnValidator.isValid(isbn)) {
       var dio = Dio();
       try {
         Response response = await dio.get(

@@ -42,10 +42,10 @@ dependencies:
   flutter_hooks: 0.14.0
   hooks_riverpod: ^0.10.0
   state_notifier: ^0.6.0
-  barcode_scan: ^3.0.1
   sqflite: any
   path: any
   nfc_manager: ^2.0.2
+  flutter_barcode_scanner: ^2.0.0
 
 dev_dependencies:
   flutter_test:

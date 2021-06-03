@@ -1,9 +1,9 @@
-import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/all.dart';
 import 'package:librarymanagerclient/models/history/book_history.dart';
+import 'package:librarymanagerclient/models/validators/isbn_validators.dart';
 import 'package:librarymanagerclient/providers/db/book/book_state_table_provider.dart';
 import 'package:librarymanagerclient/providers/db/book/book_table_provider.dart';
 import 'package:librarymanagerclient/providers/db/history/book_history_table_provider.dart';
@@ -28,8 +28,8 @@ final pickDateProvider =
     StateNotifierProvider.autoDispose((_) => PickDateProvider());
 
 final bookProvider = FutureProvider.autoDispose((ref) async {
-  final isbn = ref.watch(barcodeResultProvider.state).rawContent;
-  if (isbn.isNotEmpty) {
+  final isbn = ref.watch(barcodeResultProvider.state);
+  if (isbn.isNotEmpty & IsbnValidator.isValid(isbn)) {
     final book = await BookTableProvider().getBook(isbn);
     final bookState =
         await BookStateTableProvider().searchBookNotBorrowed(isbn);
@@ -75,39 +75,41 @@ class Borrow extends HookWidget {
   }
 
   Widget _buildBarcodeScanning() {
-    final ScanResult stateScanner = useProvider(barcodeResultProvider.state);
-    final exporter = useProvider(barcodeResultProvider);
+    final String stateScanner = useProvider(barcodeResultProvider.state);
+    final exporterScan = useProvider(barcodeResultProvider);
 
     final book = useProvider(bookProvider);
     final exporterBookState = useProvider(bookStateProvider);
 
     Widget _displayText() {
-      if (stateScanner.rawContent.isEmpty) {
+      if (stateScanner.isEmpty) {
         return Text('Scan result here.');
+      } else if (IsbnValidator.isValid(stateScanner)) {
+        return Text('ISBN: ${stateScanner}');
       } else {
-        return Text('isbn: ${stateScanner.rawContent}');
+        return Text('ISBNではありません');
       }
     }
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
-        _buildScanner(exporter),
+        _buildScanner(exporterScan),
         _displayText(),
         book.when(
           loading: () => const CircularProgressIndicator(),
           error: (err, stack) => Text('Error: $err'),
           data: (book) {
-            if (book['bookName'].toString().isEmpty) {
-              return Text('');
-            } else {
-              exporterBookState.exportResult({
-                'isbn': stateScanner.rawContent,
-                'seq': book['bookSeq'],
-                'createdAt': book['bookCreatedAt']
-              });
-              return Text(book['bookName']);
+            var isbn = '';
+            if (IsbnValidator.isValid(stateScanner)) {
+              isbn = stateScanner;
             }
+            exporterBookState.exportResult({
+              'isbn': isbn,
+              'seq': book['bookSeq'],
+              'createdAt': book['bookCreatedAt']
+            });
+            return Text(book['bookName']);
           },
         ),
       ],
@@ -274,7 +276,6 @@ class Borrow extends HookWidget {
               );
             }
           },
-          // TODO: Implement function: Validation and Confirm to borrow books.
           child: Text('BORROW!'),
         ),
       ],

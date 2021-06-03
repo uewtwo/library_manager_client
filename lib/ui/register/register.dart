@@ -1,4 +1,3 @@
-import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -39,7 +38,7 @@ class Register extends HookWidget {
   }
 
   Widget _buildBarcodeScanning() {
-    final ScanResult stateScanner = useProvider(barcodeResultProvider.state);
+    final String stateScanner = useProvider(barcodeResultProvider.state);
     final exporter = useProvider(barcodeResultProvider);
 
     void _registerBook(String isbn, String title) async {
@@ -59,16 +58,16 @@ class Register extends HookWidget {
       children: <Widget>[
         _buildScanner(exporter),
         FutureBuilder(
-          future: NdlApiClient().getBookByIsbn(stateScanner.rawContent),
+          future: NdlApiClient().getBookByIsbn(stateScanner),
           builder: (context, snapshot) {
-            if (stateScanner.rawContent.isEmpty) {
+            if (stateScanner.isEmpty) {
               return Text('Scan result here.');
             } else if (snapshot.connectionState != ConnectionState.done) {
               return const CircularProgressIndicator();
             } else if (snapshot.hasError) {
               return Text(snapshot.error.toString());
             } else {
-              final isbn = stateScanner.rawContent;
+              final isbn = stateScanner;
               final title = snapshot.data;
               // https://stackoverflow.com/questions/56894644/how-to-show-a-dialog-inside-a-futurebuilder
               Future.delayed(
