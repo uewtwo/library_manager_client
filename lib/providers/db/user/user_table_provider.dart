@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:librarymanagerclient/errors/user/UserNotFoundException.dart';
 import 'package:librarymanagerclient/models/user/user.dart';
-
-import 'file:///Users/haruka.kawaguchi/development/library_app/library_manager_client/lib/errors/user/UserNotFoundException.dart';
 
 class UserTableProvider {
   static final String tableName = 'users';
