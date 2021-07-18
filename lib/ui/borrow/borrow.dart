@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/all.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:librarymanagerclient/models/book/book_state.dart';
 import 'package:librarymanagerclient/models/history/book_history.dart';
 import 'package:librarymanagerclient/models/user/user.dart';
 import 'package:librarymanagerclient/models/validators/isbn_validators.dart';
@@ -20,16 +21,20 @@ import 'package:librarymanagerclient/widgets/date_picker_widget.dart';
 import 'package:librarymanagerclient/widgets/nfc_reader_widget.dart';
 
 final barcodeResultProvider =
-    StateNotifierProvider.autoDispose((ref) => BarcodeResultRepository());
+    StateNotifierProvider.autoDispose<BarcodeResultRepository, String>(
+        (ref) => BarcodeResultRepository());
 final nfcResultProvider =
-    StateNotifierProvider.autoDispose((ref) => NfcResultRepository());
+    StateNotifierProvider.autoDispose<NfcResultRepository, String>(
+        (ref) => NfcResultRepository());
 final userNameProvider =
-    StateNotifierProvider.autoDispose((ref) => RegisterUsernameRepository());
+    StateNotifierProvider.autoDispose<RegisterUsernameRepository, String>(
+        (ref) => RegisterUsernameRepository());
 final pickDateProvider =
-    StateNotifierProvider.autoDispose((_) => PickDateProvider());
+    StateNotifierProvider.autoDispose<PickDateProvider, DateTime>(
+        (_) => PickDateProvider());
 
 final bookProvider = FutureProvider.autoDispose((ref) async {
-  final isbn = ref.watch(barcodeResultProvider.state);
+  final isbn = ref.watch(barcodeResultProvider);
   if (isbn.isNotEmpty & IsbnValidator.isValid(isbn)) {
     final book = await BookTableProvider().getBook(isbn);
     final bookState =
@@ -45,12 +50,13 @@ final bookProvider = FutureProvider.autoDispose((ref) async {
 });
 
 final bookStateProvider =
-    StateNotifierProvider.autoDispose((ref) => BookStateRepository());
+    StateNotifierProvider.autoDispose<BookStateRepository, BookState>(
+        (ref) => BookStateRepository());
 
 class Borrow extends HookWidget {
   static const routeName = '/borrow';
 
-  Borrow({Key key}) : super(key: key);
+  Borrow({Key? key}) : super(key: key);
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -76,11 +82,11 @@ class Borrow extends HookWidget {
   }
 
   Widget _buildBarcodeScanning() {
-    final String stateScanner = useProvider(barcodeResultProvider.state);
-    final exporterScan = useProvider(barcodeResultProvider);
+    final String stateScanner = useProvider(barcodeResultProvider);
+    final exporterScan = useProvider(barcodeResultProvider.notifier);
 
     final book = useProvider(bookProvider);
-    final exporterBookState = useProvider(bookStateProvider);
+    final exporterBookState = useProvider(bookStateProvider.notifier);
 
     Widget _displayText() {
       if (stateScanner.isEmpty) {
@@ -100,7 +106,7 @@ class Borrow extends HookWidget {
         book.when(
           loading: () => const CircularProgressIndicator(),
           error: (err, stack) => Text('Error: $err'),
-          data: (book) {
+          data: (Map<String, dynamic> book) {
             var isbn = '';
             if (IsbnValidator.isValid(stateScanner)) {
               isbn = stateScanner;
@@ -110,7 +116,7 @@ class Borrow extends HookWidget {
               'seq': book['bookSeq'],
               'createdAt': book['bookCreatedAt']
             });
-            return Text(book['bookName']);
+            return Text(book['bookName'] ?? '');
           },
         ),
       ],
@@ -118,9 +124,14 @@ class Borrow extends HookWidget {
   }
 
   Widget _buildScanner(exporter) {
-    return FlatButton(
-      color: Colors.teal,
-      child: Text('BARCODE SCAN', style: TextStyle(color: Colors.white)),
+    return ElevatedButton(
+      style: TextButton.styleFrom(
+        primary: Colors.teal,
+      ),
+      child: Text(
+        'BARCODE SCAN',
+        style: TextStyle(color: Colors.white),
+      ),
       onPressed: () async {
         exporter.exportResult(
           await BarcodeScannerWidget().scan(),
@@ -130,13 +141,13 @@ class Borrow extends HookWidget {
   }
 
   Widget _buildNfcReading(BuildContext context) {
-    final String stateReader = useProvider(nfcResultProvider.state);
-    final exporterNfc = useProvider(nfcResultProvider);
+    final String stateReader = useProvider(nfcResultProvider);
+    final exporterNfc = useProvider(nfcResultProvider.notifier);
 
-    final String stateUserName = useProvider(userNameProvider.state);
-    final exporterUserName = useProvider(userNameProvider);
+    final String stateUserName = useProvider(userNameProvider);
+    final exporterUserName = useProvider(userNameProvider.notifier);
 
-    final exporterBookState = useProvider(bookStateProvider);
+    final exporterBookState = useProvider(bookStateProvider.notifier);
 
     final reader = NfcReaderWidget();
     reader.read(stateReader, exporterNfc);
@@ -151,7 +162,7 @@ class Borrow extends HookWidget {
       // 返り値がなければスナックバーを表示する
       // 戻るボタンで戻ってきた時は返り値があるのでバーを表示しない
       if (result == null) {
-        _scaffoldKey.currentState.showSnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: new Text('登録完了'),
           ),
@@ -201,16 +212,16 @@ class Borrow extends HookWidget {
   }
 
   Widget _buildReturnDate() {
-    final DateTime statePicker = useProvider(pickDateProvider.state);
-    final PickDateProvider exporter = useProvider(pickDateProvider);
-    final exporterBookState = useProvider(bookStateProvider);
+    final DateTime statePicker = useProvider(pickDateProvider);
+    final PickDateProvider exporter = useProvider(pickDateProvider.notifier);
+    final exporterBookState = useProvider(bookStateProvider.notifier);
     final context = useContext();
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text('Return Date: '),
-        RaisedButton(
+        ElevatedButton(
           onPressed: () async {
             final pickedDate = await DatePickerWidget(
               initialDate: statePicker,
@@ -231,18 +242,18 @@ class Borrow extends HookWidget {
   }
 
   Widget _buildConfirm(context) {
-    final exporterBookState = useProvider(bookStateProvider);
+    final exporterBookState = useProvider(bookStateProvider.notifier);
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        RaisedButton(
+        ElevatedButton(
           onPressed: () async {
             await exporterBookState.exportResult(
                 {'isBorrowed': 1, 'updatedAt': DateTime.now().toString()});
 
             // ignore: invalid_use_of_protected_member
-            final bookState = exporterBookState.state;
+            final BookState bookState = exporterBookState.state;
 
             if (bookState.isValid()) {
               print(bookState.toJson());

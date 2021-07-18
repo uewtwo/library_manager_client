@@ -15,7 +15,7 @@ class UserTableProvider {
 
   Future<List<User>> getUsers() async {
     var res = await FirebaseFirestore.instance.collection(tableName).get();
-    List<User> users;
+    List<User> users = [];
     res.docs.forEach((element) {
       var user = {...element.data()};
       users.add(User.fromJson(user));

@@ -79,7 +79,7 @@ class BookMultipleTablesProvider {
     });
 
     bookStates.forEach((bookState) {
-      String title = isbnTitleMap[bookState.isbn];
+      String? title = isbnTitleMap[bookState.isbn];
       bookStatesInfo.add({...bookState.toJson(), 'title': title});
     });
     return bookStatesInfo;
@@ -92,7 +92,7 @@ class BookMultipleTablesProvider {
         await BookStateTableProvider().getBookStateByUser(identifier);
     List<Map<String, dynamic>> bookInfo = [];
 
-    await Future.forEach(bookStates, (bookState) async {
+    await Future.forEach(bookStates, (BookState bookState) async {
       var book = await BookTableProvider().getBook(bookState.isbn);
       bookInfo.add({...bookState.toJson(), 'title': book.title});
     });
