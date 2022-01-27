@@ -6,7 +6,7 @@ import 'package:librarymanagerclient/providers/db/book/book_multiple_tables_prov
 class BookList extends HookWidget {
   static const routeName = '/book_list';
 
-  BookList({Key key}) : super(key: key);
+  BookList({Key? key}) : super(key: key);
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -56,12 +56,13 @@ class BookList extends HookWidget {
             return CircularProgressIndicator();
           }
           if (snapshot.hasError) {
+            print('error');
             return Text(snapshot.error.toString());
           }
           return ListView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            itemCount: snapshot.data.length,
+            itemCount: snapshot.data != null ? snapshot.data?.length : 0,
             itemBuilder: (BuildContext context, int index) {
               return _bookCard(snapshot.data, index);
             },

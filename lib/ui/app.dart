@@ -9,7 +9,7 @@ import 'package:librarymanagerclient/ui/return/return.dart';
 import 'package:librarymanagerclient/ui/search/book_list.dart';
 
 class LibraryManagerApp extends HookWidget {
-  const LibraryManagerApp({Key key}) : super(key: key);
+  const LibraryManagerApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

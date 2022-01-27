@@ -12,7 +12,7 @@ class BookHistoryTableProvider {
 
   Future<List<BookHistory>> getBookHistories() async {
     var res = await FirebaseFirestore.instance.collection(tableName).get();
-    List<BookHistory> bookHistories;
+    List<BookHistory> bookHistories = [];
     res.docs.forEach((element) {
       var bookHistory = {...element.data()};
       bookHistories.add(BookHistory.fromJson(bookHistory));
@@ -30,7 +30,7 @@ class BookHistoryTableProvider {
     if (res.docs.length == 0) {
       throw BookNotFoundException();
     }
-    List<BookHistory> bookHistories;
+    List<BookHistory> bookHistories = [];
     res.docs.forEach((element) {
       var bookHistory = {...element.data()};
       bookHistories.add(BookHistory.fromJson(bookHistory));
